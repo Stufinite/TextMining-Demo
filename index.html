@@ -58,7 +58,7 @@
 	        var lang = (document.getElementById("ischinese").checked == true) ? 'cht' : 'eng';
 	        var typesel = document.getElementById("typesel").value;
 	        var num = (document.getElementById("num").value == 0 || document.getElementById("num").value == "") ? 10 : document.getElementById("num").value;
-	        $.getJSON(typesel + keyword + "&lang=" + lang + "&lang=" + lang)
+	        $.getJSON(typesel + keyword + "&lang=" + lang + "&num=" + num)
             .done(function (json) {
                 console.log(json)
                 for (var prop in json) {
