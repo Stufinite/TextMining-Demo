@@ -1,60 +1,75 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-	<title>Websites</title>
+   <title>Websites</title>
+    <style>
+        body {
+            background-attachment: fixed;
+            background-position:left top;
+            background:url(./image/background3.jpg)no-repeat ;
+            background-size:cover;
+            background-color: #ccc;
+        }
+    </style>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
-<body>
-	<div class="w3-row w3-margin">
-		<div class="w3-card-4 w3-col l6 w3-center">
-			<div class="w3-container w3-green">
-  				<h2>文字搜尋</h2>
-			</div>
-			<form class="w3-container">
+<body >
+    <div class="container">
+        <div style="max-height:700px;min-height:200px;height:300px;position:relative" >
+            <div style="bottom:0px;position:absolute;width:100%;text-align:center;">
+                <div class="row" style=" ">
+			        <div class="col-sm-12">			
+				        <input id="keyword" style="box-shadow:4px 4px 3px rgba(20%,20%,40%,0.5);font-size:15px;padding:13px 25px 15px 25px;background-color:rgba(225,225,225,0.5);border-radius:8px;max-width:300px;min-width:50px;width:30%" type="text">
+                        <input id="num" style="box-shadow:4px 4px 3px rgba(20%,20%,40%,0.5);position:inherit;left:-2px;font-size:15px;padding:13px 25px 15px 25px;background-color:rgba(225,225,225,0.5);border-radius:8px;max-width:300px;min-width:50px;width:10%" type="number" value="10">
+                        <select id="typesel" style="box-shadow:4px 4px 3px rgba(20%,20%,40%,0.5);position:inherit;left:-3px;font-size:15px;padding:13px 25px 15px 25px;background-color:rgba(225,225,225,0.5);border-radius:8px;max-width:300px;min-width:50px;width:10%">
+                            <option  value="http://140.120.13.243:32785/api/kemApi/?keyword=" selected>KEM</option>
+                            <option  value="http://140.120.13.243:32785/api/kcmApi/?keyword=">KCM</option>
+                        </select>
+                        <button id="submitbtn"  style="box-shadow:4px 4px 3px rgba(20%,20%,20%,0.5);position:inherit;font-size:15px;left:-5px;padding:15px 25px 15px 25px;" class="btn btn-success">Search</button>
+			        </div>
+	            </div>
+                <div class="row" >
+                    <div class="col-sm-12">
+                    <input style="font-size:20px;" id="ischinese" type="radio" name="langsel" checked="checked">
+                    <label style="font-size:20px;">中文</label>
+                    <input style="font-size:20px;" type="radio" name="langsel">
+                    <label style="font-size:20px;">英文</label>
+                    </div>
+                    </div>
+                </div>
+         </div>
+        <div style="position:relative;">
+        <div id="result" style="position:absolute;border-radius:20px;left:30%;background-color:Rgba(225,225,225,0.3);max-width:500px;max-height:500px;overflow-y:scroll;">
 
-				<label class="w3-label">輸入關鍵字</label>
-				<input class="w3-input" type="text">
-
-				<input class="w3-check" type="checkbox" checked="checked">
-				<label class="w3-validate">中文</label>
-
-				<input class="w3-check" type="checkbox">
-				<label class="w3-validate">英文</label>
-
-				<button class="w3-btn w3-green w3-right">送出</button>
-			</form>
-
-			<div id="result">
-				
-			</div>
-		</div>
-	</div>
+        </div>
+            </div>
+        </div>
 </body>
+
+</html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(){
+	$('#submitbtn').click(function(){
+	    document.getElementById("result").innerHTML = "";
+	    if (document.getElementById("keyword").value != "" && document.getElementById("keyword").value != null) {
+	        var keyword = (document.getElementById("ischinese").checked == true) ? encodeURI(document.getElementById("keyword").value) : document.getElementById("keyword").value;
+	        var lang = (document.getElementById("ischinese").checked == true) ? 'cht' : 'eng';
+	        var typesel = document.getElementById("typesel").value;
+	        var num = (document.getElementById("num").value == 0 || document.getElementById("num").value == "") ? 10 : document.getElementById("num").value;
+	        $.getJSON(typesel + keyword + "&lang=" + lang + "&lang=" + lang)
+            .done(function (json) {
+                console.log(json)
+                for (var prop in json) {
+                    document.getElementById("result").innerHTML += "<h1>" + prop + ':' + json[prop] + "</h1>";
+                }
 
-		$.getJSON( "http://140.120.13.243:32785/api/kemApi/?keyword=%E8%A8%88%E7%AE%97%E6%A9%9F&lang=cht")
-		.done(function(json){
-			console.log(json)
-			// $("<h1>",{
-			// 	text:'使用者 : '+json['User']+" 喜好的料理型態:"+ json["Ftype"]+" 最愛的菜:"+json['FDish']
-			// }).appendTo("#user_api")
-			$.each(json, function(oKey, oValue){
+            })
+	    }
+	    else {
+	        alert("您尚未輸入要尋找的關鍵字!");
+	    }
+	});
 
-				$("<h1>",{
-					text:oKey + oValue
-				}).appendTo("#result")
-				// $.each(oValue['meal'], function(mKey, mValue){
-				// 	$( "<h1>", {
-				// 	    "class": "test",
-				// 	    html:"<li id=''>"+ mValue[0]+":" + mValue[1] +"份 "+ "</li>" ,
-				// 	  }).appendTo( "#user_api" );
-				// })
-			})
-		})
-	})
 </script>
-</html>
